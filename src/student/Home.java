@@ -1,15 +1,20 @@
 package student;
 
+import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
-import java.awt.CardLayout;
 import javax.swing.JButton;
+import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
-public class Home extends JFrame{
+public class Home extends JFrame {
 
-	private JFrame frame;
+	private JPanel contentPane;
 
 	/**
 	 * Launch the application.
@@ -18,9 +23,8 @@ public class Home extends JFrame{
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Home window = new Home();
-					window.frame.setVisible(true);
-					
+					Home frame = new Home();
+					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -29,24 +33,53 @@ public class Home extends JFrame{
 	}
 
 	/**
-	 * Create the application.
+	 * Create the frame.
 	 */
 	public Home() {
-		initialize();
-	}
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 477, 517);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
-		frame.setTitle("home 1");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 502, 500);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("New label");
-		lblNewLabel.setBounds(193, 124, 61, 16);
-		frame.getContentPane().add(lblNewLabel);
+		JButton btnAddStudent = new JButton("Students");
+		btnAddStudent.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(e.getSource()==btnAddStudent) {
+				contentPane.setVisible(false);
+//				frame.dispose();
+//				frame.setVisible(false);
+				ViewStudents vs = new ViewStudents();
+                vs.setVisible(true); 
+				}
+			}
+		});
+		btnAddStudent.setBounds(97, 137, 288, 55);
+		contentPane.add(btnAddStudent);
+		
+		JButton btnStudentMarks = new JButton("Student Marks");
+		btnStudentMarks.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(e.getSource()==btnAddStudent) {
+					contentPane.setVisible(false);
+//					frame.dispose();
+//					frame.setVisible(false);
+					Marks m = new Marks();
+	                m.setVisible(true); 
+					}
+			}
+		});
+		btnStudentMarks.setBounds(97, 219, 288, 55);
+		contentPane.add(btnStudentMarks);
+		
+		JButton btnLogout = new JButton("Logout");
+		btnLogout.setBackground(Color.RED);
+		btnLogout.setBounds(387, 22, 89, 32);
+		contentPane.add(btnLogout);
+		
+		JButton btnTimetable = new JButton("Class Timetable");
+		btnTimetable.setBounds(97, 313, 288, 55);
+		contentPane.add(btnTimetable);
 	}
 }

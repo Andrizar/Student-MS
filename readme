@@ -1,0 +1,13 @@
+In Katikamu primary school, a teacher registers students manually using a book and a pen. A teacher records student's first name, last name, registration number, gender, age, subject and the class he/she belongs to. Teachers also record students’ marks using pen and paper. The registration and results books are sometimes misplaced and quite difficult to locate in a staff room. Students complain that their marks are lost since teachers misplace and lose books where they record students’ marks. As a software engineer, you are required to develop a java windows application that will address issues encountered by teachers and students as specified in the above scenario; Some of the functionality expected in your application is as follows;
+The application is able to;
+a) Allow the teacher to do the following;
+• log into the application
+• register students
+• record students’ marks
+• see all registered students
+• filter records e.g., search a student using their registration number, filter students
+using a subject name.
+b) Allow students to
+• Login into the application
+• see their marks
+• see their class timetable

@@ -15,8 +15,10 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-public class Registration{
+public class Registration implements ActionListener{
 
 	private JFrame frame;
 	private JTextField fName;
@@ -108,6 +110,7 @@ public class Registration{
 				char[] pass;
 
 				try {
+					if(fName!=null && uName!=null && password!=null && teacherID!=null) {
 					fullName = fName.getText();
 					userName = uName.getText();
 					pass = password.getPassword();
@@ -116,7 +119,12 @@ public class Registration{
 					if(ps.executeUpdate()==1) {
 					JOptionPane.showMessageDialog(null, "Registered successfully");
 					}
-				}
+					}
+					else {
+						JOptionPane.showMessageDialog(null, "All fields must be filled");
+					}
+					}
+				
 				catch(Exception e1) {
 					e1.printStackTrace();
 				}
@@ -131,6 +139,12 @@ public class Registration{
 		frame.getContentPane().add(lblNewLabel_1);
 		
 		JLabel lblLogin = new JLabel("Login");
+		lblLogin.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				
+			}
+		});
 		lblLogin.setForeground(Color.BLUE);
 		lblLogin.setBounds(397, 327, 41, 16);
 		frame.getContentPane().add(lblLogin);
@@ -138,5 +152,16 @@ public class Registration{
 		password = new JPasswordField();
 		password.setBounds(232, 177, 244, 26);
 		frame.getContentPane().add(password);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		JLabel lblLogin = new JLabel("Login");
+		if(arg0.getSource()==lblLogin) {
+			
+			frame.dispose();
+			Login log = new Login();
+			}
 	}
 }

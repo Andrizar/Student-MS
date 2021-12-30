@@ -5,6 +5,7 @@ import java.awt.Window;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -15,7 +16,7 @@ import java.sql.Statement;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
 
-public class Login extends JFrame{
+public class Login{
 
 	private JFrame frame;
 	private JTextField username;
@@ -64,7 +65,7 @@ public class Login extends JFrame{
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 624, 393);
+		frame.setBounds(100, 100, 626, 393);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -80,16 +81,20 @@ public class Login extends JFrame{
 //		JButton btnLogin = new JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(username!=null) {
+				if(username!=null && password!=null) {
 					frame.dispose();
 //					frame.setVisible(false);
 					Home h = new Home();
+                         h.setVisible(true);               
 //					h.setTitle("Home");
 //					h.setBounds(100, 100, 477, 517);
 //					h.setVisible(true);
 //					new Registration().s
 //					new Student().
 //					h.setVisible(true);
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "All fields must be filled");
 				}
 //				Home home = new Home();   
 //		        setVisible(false); // Hide current frame
