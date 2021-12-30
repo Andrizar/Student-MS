@@ -12,6 +12,7 @@ import javax.swing.table.DefaultTableModel;
 
 import net.proteanit.sql.DbUtils;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
@@ -28,24 +29,28 @@ import javax.swing.JOptionPane;
 import java.awt.Choice;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.Console;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JComboBox;
 import javax.swing.JPasswordField;
+import javax.swing.JRadioButton;
+import java.awt.Label;
 
 public class ViewStudents extends JFrame {
 	private JPanel contentPane;
 	private static JTable table;
 	private JTextField search;
 	private JTextField ID;
-
+	private static JComboBox<String> classField;
 	private JTextField fName;
 	private JTextField lName;
 	private JTextField regNo;
-	private JTextField gender;
 	private JTextField age;
+	private ButtonGroup bg;
+	private JRadioButton rdFemale;
+	private JRadioButton rdMale;
 	public static Connection con = null;
-	private JTextField classField;
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -55,6 +60,7 @@ public class ViewStudents extends JFrame {
 					frame.setVisible(true);
 					con = DBConnect.connect();
 					tableRefresh();
+					dropDown();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -63,7 +69,8 @@ public class ViewStudents extends JFrame {
 	}
 	public static void tableRefresh() {
 		try {
-			String query = "SELECT sID,FirstName,LastName,regNo,gender,age,class FROM students";
+//			String query = "SELECT sID,FirstName,LastName,regNo,gender,age,class FROM students";
+			String query = "Select students.FirstName, students.LastName, students.regNo, marks.mark, marks.GRADE, subject.subjectName FROM students INNER JOIN marks ON students.sID=marks.sID INNER JOIN subject ON marks.subjectID=subject.subjectID";
 			PreparedStatement ps = con.prepareStatement(query);
 			ResultSet rs = ps.executeQuery();
 			table.setModel(DbUtils.resultSetToTableModel(rs));
@@ -73,8 +80,23 @@ public class ViewStudents extends JFrame {
 			
 		}
 	}
+	
+	public static void dropDown() {
+		String query = "SELECT * FROM class";
+		try {
+			PreparedStatement pst = con.prepareStatement(query);
+			ResultSet rs = pst.executeQuery();
+			while(rs.next()) {
+				classField.addItem(rs.getString("class"));
+//				JOptionPane.showMessageDialog(null, comboBox.get);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public ViewStudents() {
-		
 		setBounds(100, 100, 858, 605);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.LIGHT_GRAY);
@@ -87,6 +109,13 @@ public class ViewStudents extends JFrame {
 		lblId.setBounds(604, 116, 16, 14);
 		getContentPane().add(lblId);
 		
+		bg=new ButtonGroup(); 
+		rdFemale = new JRadioButton("Female");
+		rdFemale.setActionCommand("Female");
+		rdMale = new JRadioButton("Male");
+		rdMale.setActionCommand("Male");
+		bg.add(rdFemale);
+		bg.add(rdMale);
 		JLabel lblFirstName = new JLabel("First Name");
 		lblFirstName.setBounds(545, 149, 84, 14);
 		getContentPane().add(lblFirstName);
@@ -111,11 +140,19 @@ public class ViewStudents extends JFrame {
 		lblClass.setBounds(586, 335, 34, 14);
 		getContentPane().add(lblClass);
 		
+		Label test = new Label("");
+		test.setBounds(569, 410, 62, 22);
+		contentPane.add(test);
+		
 		ID = new JTextField();
 		ID.setEditable(false);
 		ID.setBounds(630, 113, 202, 20);
 		getContentPane().add(ID);
 		ID.setColumns(10);
+		
+		Label label = new Label("New label");
+		label.setBounds(0, 0, 62, 22);
+		contentPane.add(label);
 		
 		fName = new JTextField();
 		fName.setColumns(10);
@@ -131,11 +168,6 @@ public class ViewStudents extends JFrame {
 		regNo.setColumns(10);
 		regNo.setBounds(630, 217, 202, 20);
 		getContentPane().add(regNo);
-		
-		gender = new JTextField();
-		gender.setColumns(10);
-		gender.setBounds(630, 254, 202, 20);
-		getContentPane().add(gender);
 		
 		age = new JTextField();
 		age.setColumns(10);
@@ -167,9 +199,8 @@ public class ViewStudents extends JFrame {
 						fName.setText(rs.getString("FirstName"));
 						lName.setText(rs.getString("LastName"));
 						regNo.setText(rs.getString("regNo"));
-						gender.setText(rs.getString("gender"));
 						age.setText(rs.getString("age"));
-						classField.setText(rs.getString("class"));
+						classField.addItem(rs.getString("class"));
 				}
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
@@ -182,8 +213,11 @@ public class ViewStudents extends JFrame {
 		JButton btnHome = new JButton("Home");
 		btnHome.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				ViewStudents.super.setVisible(false);
+				Home home = new Home();
+				home.setVisible(true);
 				
-			}
+			}	
 		});
 		btnHome.setBounds(10, 11, 89, 23);
 		getContentPane().add(btnHome);
@@ -200,16 +234,20 @@ public class ViewStudents extends JFrame {
 					 try {
 					StudentDAOImpl sid = new StudentDAOImpl();
 //					sid.getConnection();
-					Student s = new Student(ID.getText(), fName.getText(),lName.getText(),regNo.getText(),gender.getText(),age.getText(),classField.getText());	
+//					if(ID.getText().equals(""), fName.getText(),lName.getText(),regNo.getText(),gender.getText(),age.getText(),classField.getText()) {
+//						
+//					}
+//					ID.
+					Student s = new Student(ID.getText(), fName.getText(),lName.getText(),regNo.getText(),bg.getSelection().getActionCommand(),age.getText(),classField.getSelectedItem().toString());	
 					sid.addStudent(s);
 					
 					ID.setText("");
 					fName.setText("");
 					lName.setText("");
 					regNo.setText("");
-					gender.setText("");
+//					gender.setText("");
 					age.setText("");
-					classField.setText("");
+					classField.addItem("");
 					tableRefresh();
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
@@ -230,15 +268,15 @@ public class ViewStudents extends JFrame {
 						try {
 							StudentDAOImpl sid = new StudentDAOImpl();
 //							sid.getConnection();
-							Student s = new Student(ID.getText(),fName.getText(),lName.getText(),regNo.getText(),gender.getText(),age.getText(),classField.getText());	
+							Student s = new Student(ID.getText(),fName.getText(),lName.getText(),regNo.getText(),bg.getSelection().getActionCommand(),age.getText(),classField.getSelectedItem().toString());	
 							sid.updateStudent(s);
 							ID.setText("");
 							fName.setText("");
 							lName.setText("");
 							regNo.setText("");
-							gender.setText("");
+//							gender.setText("");
 							age.setText("");
-							classField.setText("");
+							classField.addItem("");
 							
 							
 							tableRefresh();
@@ -262,15 +300,15 @@ public class ViewStudents extends JFrame {
 				try {
 					StudentDAOImpl sid = new StudentDAOImpl();
 //					sid.getConnection();
-					Student s = new Student(ID.getText(),fName.getText(),lName.getText(),regNo.getText(),gender.getText(),age.getText(),classField.getText());	
+					Student s = new Student(ID.getText(),fName.getText(),lName.getText(),regNo.getText(),bg.getSelection().getActionCommand(),age.getText(),classField.getSelectedItem().toString());	
 					sid.deleteUser(Integer.parseInt(ID.getText()));
 					ID.setText("");
 					fName.setText("");
 					lName.setText("");
 					regNo.setText("");
-					gender.setText("");
+//					gender.setText("");
 					age.setText("");
-					classField.setText("");
+					classField.addItem("");
 					
 					
 						tableRefresh();
@@ -317,10 +355,24 @@ public class ViewStudents extends JFrame {
 		getContentPane().add(search);
 		search.setColumns(10);
 		
-		classField = new JTextField();
+		classField = new JComboBox<String>();
+		classField.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int s = classField.getSelectedIndex();
+//				test.setText();
+			}
+		});
 		classField.setBounds(630, 332, 202, 20);
 		contentPane.add(classField);
-		classField.setColumns(10);
+		
+		rdMale.setBounds(630, 253, 67, 23);
+		contentPane.add(rdMale);
+		
+		
+		rdFemale.setBounds(769, 253, 67, 23);
+		contentPane.add(rdFemale);
+		
+		
 		
 		
 		

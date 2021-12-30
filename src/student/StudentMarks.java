@@ -27,12 +27,13 @@ import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
+import javax.swing.DefaultComboBoxModel;
 
 public class StudentMarks extends JFrame implements ActionListener{
 
 	private JPanel contentPane;
 	private static JTable table;
-	private static JComboBox<String> comboBox;
+	private static JComboBox<comboSubject> comboBox;
 	public static Connection con = null;
 	private static JTextField sID;
 	private JTextField mark;
@@ -46,6 +47,7 @@ public class StudentMarks extends JFrame implements ActionListener{
 					StudentMarks frame = new StudentMarks();
 					frame.setVisible(true);
 					con = DBConnect.connect();
+//					comboSubject cs;
 					tableRefresh();
 					dropDown();
 				} catch (Exception e) {
@@ -56,9 +58,7 @@ public class StudentMarks extends JFrame implements ActionListener{
 	}
 	public static void tableRefresh() {
 		try {
-//			String query = "SELECT students.sID, students.regNo, students.class FROM students INNER JOIN marks ON marks.sID=students.sID;";
-			String query = "SELECT students.FirstName, students.LastName,students.regNo,subject.subjectName, marks.mark,marks.Remark FROM students JOIN marks ON students.sID = marks.sID JOIN subject ON subject.subjectID = marks.subjectID";
-//			String query = "SELECT sID,FirstName,LastName,regNo,gender,age,class FROM students";
+			String query = "SELECT sID,FirstName,LastName,regNo,gender,age,class FROM students";
 			PreparedStatement ps = con.prepareStatement(query);
 			ResultSet rs = ps.executeQuery();
 			table.setModel(DbUtils.resultSetToTableModel(rs));
@@ -76,7 +76,7 @@ public class StudentMarks extends JFrame implements ActionListener{
 			PreparedStatement pst = con.prepareStatement(query);
 			ResultSet rs = pst.executeQuery();
 			while(rs.next()) {
-				comboBox.addItem(rs.getString("subjectName"));
+				comboBox.addItem(new comboSubject(rs.getString("subjectName"),rs.getString("subjectID")));
 //				JOptionPane.showMessageDialog(null, comboBox.get);
 			}
 		} catch (SQLException e) {
@@ -100,16 +100,16 @@ public class StudentMarks extends JFrame implements ActionListener{
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 125, 516, 356);
 		contentPane.add(scrollPane);
-		
+		JLabel test = new JLabel("");
+		test.setBounds(629, 278, 46, 14);
+		contentPane.add(test);
 		table = new JTable();
 		scrollPane.setViewportView(table);
-		
 		comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Select"}));
 		comboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				String sql = "SELECT id FROM ";
-//				PreparedStatement ps = con.prepareStatement(sql);
-//				ResultSet rs = ps.executeQuery();
+				
 			}
 		});
 		comboBox.setBounds(626, 170, 130, 20);
@@ -128,63 +128,86 @@ public class StudentMarks extends JFrame implements ActionListener{
 		JButton btnAddMark = new JButton("Add Mark");
 		btnAddMark.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				PreparedStatement pst;
+				String query = "INSERT INTO marks(sID,subjectID,mark,GRADE,Remark) VALUES(?,?,?,?,?)";
+				try {
+					if(Integer.parseInt(mark.getText())>80) {
+						pst = con.prepareStatement(query);
+						pst.setString(1,sID.getText());
+						pst.setString(2,Integer.toString(comboBox.getSelectedIndex()));
+						pst.setString(3,mark.getText());
+						pst.setString(4,"D1");
+						pst.setString(5,"Excellent");
+						if(pst.executeUpdate()==1) {
+							JOptionPane.showMessageDialog(null, "Student Mark Added Successfully");
+						}
+					}
+					else if(Integer.parseInt(mark.getText())>70 && Integer.parseInt(mark.getText())<80) {
+						pst = con.prepareStatement(query);
+						pst.setString(1,sID.getText());
+						pst.setString(2,Integer.toString(comboBox.getSelectedIndex()));
+						pst.setString(3,mark.getText());
+						pst.setString(4,"D2");
+						pst.setString(5,"Very Good");
+						if(pst.executeUpdate()==1) {
+							JOptionPane.showMessageDialog(null, "Student Mark Added Successfully");
+						}
+					
+					}
+					else if(Integer.parseInt(mark.getText())>50 && Integer.parseInt(mark.getText())<70) {
+						pst = con.prepareStatement(query);
+						pst.setString(1,sID.getText());
+						pst.setString(2,Integer.toString(comboBox.getSelectedIndex()));
+						pst.setString(3,mark.getText());
+						pst.setString(4,"Credit");
+						pst.setString(5,"Good");
+						if(pst.executeUpdate()==1) {
+							JOptionPane.showMessageDialog(null, "Student Mark Added Successfully");
+						}
+					
+					}
+					else if(Integer.parseInt(mark.getText())<50) {
+						pst = con.prepareStatement(query);
+						pst.setString(1,sID.getText());
+						pst.setString(2,Integer.toString(comboBox.getSelectedIndex()));
+						pst.setString(3,mark.getText());
+						pst.setString(4,"Fail");
+						pst.setString(5,"Poor");
+						if(pst.executeUpdate()==1) {
+							JOptionPane.showMessageDialog(null, "Student Mark Added Successfully");
+						}
+					
+					}
+					
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
+				test.setText(Integer.toString(comboBox.getSelectedIndex()));
 			}
 		});
 		btnAddMark.setBounds(626, 331, 89, 23);
 		contentPane.add(btnAddMark);
+		
+		
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				DefaultTableModel dtm = (DefaultTableModel) table.getModel();
 				int selectedRowIndex = table.getSelectedRow(); //get selected row
-				String id = dtm.getValueAt(selectedRowIndex, 3).toString();
+				String id = dtm.getValueAt(selectedRowIndex, 0).toString();
 //				int row = table.getSelectedRow();
 //				String RegNo = table.getModel().getValueAt(row, 3).toString();
 				try {
-					String sql = "SELECT subjectID FROM subject WHERE subjectName='"+comboBox.getSelectedItem().toString()+"'";
-					PreparedStatement ps = con.prepareStatement(sql);
-					ResultSet rs = ps.executeQuery();
-					while(rs.next()) {
-						int subjectID = rs.getInt("subjectID");
-					JOptionPane.showMessageDialog(null,  rs.getInt("subjectID"));
-//					if(mark.getText()>=90) {
-						String query = "INSERT INTO marks(sID,subjectID,marks,Remarks) VALUES(?,?,?,?)'";
-						
-						ps = con.prepareStatement(query);
-						ps.setString(1,sID.getText());
-						ps.setInt(2,subjectID);
-						ps.setString(3,sID.getText());
-						if(ps.executeUpdate()==1) {
-							JOptionPane.showMessageDialog(null,"Students Marks added");
-						}
-//					}
-////					else if(Integer.parseInt(sID.getText())<=50) {
-//						String remark="Fail";
-//						String query1 = "INSERT INTO marks(sID,subjectID,marks) VALUES(?,?,?)'";
-//						
-//						ps = con.prepareStatement(query1);
-//						ps.setInt(1,Integer.parseInt(sID.getText()));
-//						ps.setInt(2,subjectID);
-//						ps.setInt(3,Integer.parseInt(sID.getText()));
-//						if(ps.executeUpdate()==1) {
-//							JOptionPane.showMessageDialog(null,"Students Marks added");
-//						}
-////					}
-					String query2 = "INSERT INTO marks(sID,subjectID,marks) VALUES(?,?,?)'";
 					
-					ps = con.prepareStatement(query2);
-					ps.setInt(1,Integer.parseInt(sID.getText()));
-					ps.setInt(2,subjectID);
-					ps.setInt(3,Integer.parseInt(sID.getText()));
-					if(ps.executeUpdate()==1) {
-						
-					}
-//					while(rs.next()) {
-//						ID.setText(rs.getString("sID"));
-//						fName.setText(rs.getString("FirstName"));
-//						lName.setText(rs.getString("LastName"));
-	//
+					
+					String query = "SELECT * FROM students WHERE sID='"+id+"'";
+					Statement ps;
+					ps = con.createStatement();
+					ResultSet rs = ps.executeQuery(query);
+					while(rs.next()) {
+						sID.setText(rs.getString("sID"));
 				}
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block

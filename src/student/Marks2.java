@@ -2,12 +2,9 @@ package student;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -16,13 +13,11 @@ import javax.swing.border.EmptyBorder;
 import net.proteanit.sql.DbUtils;
 
 import javax.swing.JTable;
-import javax.swing.JTextField;
 
-public class Marks extends JFrame {
+public class Marks2 extends JFrame {
 
 	private JPanel contentPane;
 	private static JTable table;
-	private static JTextField search;
 	private static Connection con = null;
 	/**
 	 * Launch the application.
@@ -31,7 +26,7 @@ public class Marks extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Marks frame = new Marks();
+					Marks2 frame = new Marks2();
 					frame.setVisible(true);
 					 con = DBConnect.connect();
 					 tableRefresh();
@@ -58,7 +53,7 @@ public class Marks extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Marks() {
+	public Marks2() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 676, 488);
 		contentPane = new JPanel();
@@ -69,31 +64,5 @@ public class Marks extends JFrame {
 		table = new JTable();
 		table.setBounds(95, 81, 521, 336);
 		contentPane.add(table);
-		
-		search = new JTextField();
-//		System.out.println(comboBox.getSelectedItem().toString());
-		search.addKeyListener(new KeyAdapter() {
-			
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-				if(search.getText().equals("")) {
-					tableRefresh();
-				}
-				else {
-						try {
-							String query = "SELECT sID,FirstName,LastName,regNo,gender,age,class FROM students WHERE gender LIKE '"+search.getText()+"%' OR regNo LIKE '"+search.getText()+"%'";
-							PreparedStatement ps = con.prepareStatement(query);
-//							ps.setString(1,);
-//							ps.setString(1,search.getText()+"%");
-							ResultSet rs = ps.executeQuery();
-							table.setModel(DbUtils.resultSetToTableModel(rs));
-							ps.close();
-						} catch (SQLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-			}
-		});
 	}
 }

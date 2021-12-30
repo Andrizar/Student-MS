@@ -12,10 +12,10 @@ import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class Home extends JFrame {
+public class Home extends JFrame implements ActionListener{
 
 	private JPanel contentPane;
-
+	private static JButton btnAddStudent = new JButton("Students");
 	/**
 	 * Launch the application.
 	 */
@@ -25,6 +25,7 @@ public class Home extends JFrame {
 				try {
 					Home frame = new Home();
 					frame.setVisible(true);
+					 frame.add(btnAddStudent);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -43,18 +44,8 @@ public class Home extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JButton btnAddStudent = new JButton("Students");
-		btnAddStudent.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(e.getSource()==btnAddStudent) {
-				contentPane.setVisible(false);
-//				frame.dispose();
-//				frame.setVisible(false);
-				ViewStudents vs = new ViewStudents();
-                vs.setVisible(true); 
-				}
-			}
-		});
+		
+	
 		btnAddStudent.setBounds(97, 137, 288, 55);
 		contentPane.add(btnAddStudent);
 		
@@ -81,5 +72,16 @@ public class Home extends JFrame {
 		JButton btnTimetable = new JButton("Class Timetable");
 		btnTimetable.setBounds(97, 313, 288, 55);
 		contentPane.add(btnTimetable);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if(e.getSource()==btnAddStudent){
+
+//            contentPane.dispose();
+            new ViewStudents();
+
+        }
 	}
 }
