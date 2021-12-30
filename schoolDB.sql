@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 30, 2021 at 03:06 PM
+-- Generation Time: Dec 30, 2021 at 09:44 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.3
 
@@ -57,7 +57,7 @@ CREATE TABLE `marks` (
   `sID` int(255) DEFAULT NULL,
   `subjectID` int(255) DEFAULT NULL,
   `mark` int(255) DEFAULT NULL,
-  `GRADE` int(255) NOT NULL,
+  `GRADE` varchar(255) DEFAULT NULL,
   `Remark` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -66,10 +66,8 @@ CREATE TABLE `marks` (
 --
 
 INSERT INTO `marks` (`id`, `sID`, `subjectID`, `mark`, `GRADE`, `Remark`) VALUES
-(1, 6, 1, 80, 0, 'Excellent'),
-(2, 7, 2, NULL, 0, NULL),
-(3, 10, 4, NULL, 0, NULL),
-(4, 6, NULL, NULL, 0, NULL);
+(5, 10, 3, 80, 'D1', 'Excellent'),
+(6, 7, 1, 35, 'Fail', 'Poor');
 
 -- --------------------------------------------------------
 
@@ -95,7 +93,10 @@ CREATE TABLE `students` (
 INSERT INTO `students` (`sID`, `FirstName`, `LastName`, `regNo`, `gender`, `age`, `class`, `password`) VALUES
 (6, 'Buhwa123', 'Ezra', '182344', 'Male', '10', '4', '12345'),
 (7, 'Atwiine', 'Ryan', '189990', 'Male', '5', '3', '12345'),
-(10, 'Awori', 'Vivian', '1899911', 'Female', '7', '2', '12345');
+(10, 'Awori', 'Vivian', '1899911', 'Female', '7', '2', '12345'),
+(11, 'Buhwa', 'me', '18', 'Male', '12', 'P6', '12345'),
+(12, 'ee', 'e', '23', 'Female', '2', 'P2', '12345'),
+(13, 'rfvcr', 'rvrv123', '123', 'Male', '23', 'P3', '12345');
 
 -- --------------------------------------------------------
 
@@ -117,6 +118,17 @@ INSERT INTO `subject` (`subjectID`, `subjectName`) VALUES
 (2, 'SCIENCE'),
 (3, 'SST'),
 (4, 'ENGLISH');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `test`
+--
+
+CREATE TABLE `test` (
+  `id` int(255) NOT NULL,
+  `subjectID` int(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -163,7 +175,8 @@ INSERT INTO `users` (`id`, `name`, `username`, `password`, `teacherID`) VALUES
 (5, 'Buhwa Erasmus Ezra', 'Ezra', '[C@74077ad2', 'TID123'),
 (6, 'Awori Vivian Maria', 'Vivian', '[C@75a501ce', 'TID1234'),
 (7, 'Atwiine Ryan Agaba', 'Ryan', '[C@6a9d6bf5', 'TID12345'),
-(8, 'Ssekirime Andrew', 'Andrew', '[C@48afa338', 'TID123456');
+(8, 'Ssekirime Andrew', 'Andrew', '[C@48afa338', 'TID123456'),
+(9, 'Joab', 'Joab', '[C@74077ad2', 'TID456');
 
 --
 -- Indexes for dumped tables
@@ -194,6 +207,12 @@ ALTER TABLE `subject`
   ADD PRIMARY KEY (`subjectID`);
 
 --
+-- Indexes for table `test`
+--
+ALTER TABLE `test`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `timetable`
 --
 ALTER TABLE `timetable`
@@ -219,19 +238,25 @@ ALTER TABLE `class`
 -- AUTO_INCREMENT for table `marks`
 --
 ALTER TABLE `marks`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `sID` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `sID` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `subject`
 --
 ALTER TABLE `subject`
   MODIFY `subjectID` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `test`
+--
+ALTER TABLE `test`
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `timetable`
@@ -243,7 +268,7 @@ ALTER TABLE `timetable`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
