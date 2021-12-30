@@ -22,8 +22,8 @@ public class Marks extends JFrame {
 
 	private JPanel contentPane;
 	private static JTable table;
-	private static JTextField search;
 	private static Connection con = null;
+	private JTextField search;
 	/**
 	 * Launch the application.
 	 */
@@ -71,6 +71,10 @@ public class Marks extends JFrame {
 		contentPane.add(table);
 		
 		search = new JTextField();
+		search.setBounds(183, 32, 310, 20);
+		contentPane.add(search);
+		search.setColumns(10);
+
 //		System.out.println(comboBox.getSelectedItem().toString());
 		search.addKeyListener(new KeyAdapter() {
 			
@@ -81,7 +85,8 @@ public class Marks extends JFrame {
 				}
 				else {
 						try {
-							String query = "SELECT sID,FirstName,LastName,regNo,gender,age,class FROM students WHERE gender LIKE '"+search.getText()+"%' OR regNo LIKE '"+search.getText()+"%'";
+							String query = "Select students.FirstName, students.LastName, students.regNo, marks.mark, marks.GRADE, subject.subjectName FROM students INNER JOIN marks ON students.sID=marks.sID INNER JOIN subject ON marks.subjectID=subject.subjectID " + 
+									"WHERE subjectName LIKE '"+search.getText()+"%' OR regNo LIKE '"+search.getText()+"%'";
 							PreparedStatement ps = con.prepareStatement(query);
 //							ps.setString(1,);
 //							ps.setString(1,search.getText()+"%");
